@@ -7,12 +7,16 @@ public class StreamManager {
 
     private final InputStream inputStream;
     private final OutputStream outputStream;
+    private final ObjectInputStream ois;
+    private final ObjectOutputStream oos;
 
     public StreamManager(Socket clientSocket) throws IOException {
         this.inputStream = clientSocket.getInputStream();
         this.outputStream = clientSocket.getOutputStream();
+        ois = new ObjectInputStream(inputStream);
+        oos = new ObjectOutputStream(outputStream);
     }
-
+    
     public String receiveString() {
         String message = "error";
         try {
@@ -35,27 +39,20 @@ public class StreamManager {
     }
     
     public Object receiveObject() {
-        ObjectInputStream ois = null;
-        System.out.println("[SERVER] Try reception ...");
-        try {
-            ois = new ObjectInputStream(inputStream);
+        try {           
             Object object = ois.readObject();
             System.out.println("Object " + object.getClass().getName() + " succesfully received! ");
             return object;
         } catch (IOException e) {
-        	System.out.println("[SERVER] Reception failure 1 !");
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
-        	System.out.println("[SERVER] Reception failure 2 !");
             e.printStackTrace();
         }
         return null;
     }
     
     public void sendObject(Object object) {
-        ObjectOutputStream  oos = null;
-        try {
-            oos = new ObjectOutputStream(outputStream);
+        try {           
             oos.flush();
             oos.writeObject(object);
             System.out.println(object.getClass().getName() + " sent! ");
@@ -72,5 +69,5 @@ public class StreamManager {
             System.err.println("Error closing the streams");
             e.printStackTrace();
         }
-}
+    }
 }

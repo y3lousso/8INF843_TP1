@@ -7,10 +7,14 @@ public class StreamManager {
 
     private final InputStream inputStream;
     private final OutputStream outputStream;
+    private final ObjectInputStream ois;
+    private final ObjectOutputStream oos;
 
     StreamManager(Socket clientSocket) throws IOException {
         this.inputStream = clientSocket.getInputStream();
         this.outputStream = clientSocket.getOutputStream();
+        oos = new ObjectOutputStream(outputStream);
+        ois = new ObjectInputStream(inputStream);        
     }
 
     public String receiveString() {
@@ -35,9 +39,7 @@ public class StreamManager {
     }
     
     public Object receiveObject() {
-        ObjectInputStream ois = null;
-        try {
-            ois = new ObjectInputStream(inputStream);
+        try {           
             Object object = ois.readObject();
             System.out.println("Object " + object.getClass().getName() + " succesfully received! ");
             return object;
@@ -50,9 +52,7 @@ public class StreamManager {
     }
     
     public void sendObject(Object object) {
-        ObjectOutputStream  oos = null;
-        try {
-            oos = new ObjectOutputStream(outputStream);
+        try {           
             oos.flush();
             oos.writeObject(object);
             System.out.println(object.getClass().getName() + " sent! ");
@@ -61,8 +61,6 @@ public class StreamManager {
         }
     }
 
-
-    
     public void closeAll() {
         try {
             this.inputStream.close();
@@ -71,5 +69,5 @@ public class StreamManager {
             System.err.println("Error closing the streams");
             e.printStackTrace();
         }
-}
+    }
 }
