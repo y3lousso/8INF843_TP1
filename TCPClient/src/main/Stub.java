@@ -24,19 +24,19 @@ public class Stub implements CalculatriceItf{
     
 	@Override
 	public int addition(int arg1, int arg2) {
-		streamManager.sendString("ADD:"+arg1+"/"+arg2);		
+		streamManager.sendString("ADD:"+arg1+"-"+arg2);		
 		return Integer.parseInt(streamManager.receiveString());	
 	}
 
 	@Override
 	public int multiplication(int arg1, int arg2) {
-		streamManager.sendString("MUL:"+arg1+"/"+arg2);	
+		streamManager.sendString("MUL:"+arg1+"-"+arg2);	
 		return Integer.parseInt(streamManager.receiveString());	
 	}
 
 	@Override
 	public int soustraction(int arg1, int arg2) {
-		streamManager.sendString("SUB:"+arg1+"/"+arg2);	
+		streamManager.sendString("SUB:"+arg1+"-"+arg2);	
 		return Integer.parseInt(streamManager.receiveString());	
 	}
 	
