@@ -10,13 +10,13 @@ public class StreamManager {
     private final ObjectInputStream ois;
     private final ObjectOutputStream oos;
 
-    StreamManager(Socket clientSocket) throws IOException {
-        this.inputStream = clientSocket.getInputStream();
-        this.outputStream = clientSocket.getOutputStream();
+    public StreamManager(Socket clientSocket) throws IOException {
+    	this.outputStream = clientSocket.getOutputStream();
+        this.inputStream = clientSocket.getInputStream();        
         oos = new ObjectOutputStream(outputStream);
         ois = new ObjectInputStream(inputStream);        
     }
-
+    
     public String receiveString() {
         String message = "error";
         try {
@@ -60,7 +60,7 @@ public class StreamManager {
             e.printStackTrace();
         }
     }
-
+    
     public void closeAll() {
         try {
             this.inputStream.close();

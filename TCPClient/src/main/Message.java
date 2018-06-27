@@ -2,7 +2,19 @@ package main;
 
 import java.io.Serializable;
 
-public class Calc implements Serializable {
+@SuppressWarnings("serial")
+public class Message implements Serializable {
+
+	public String methodName;
+	public int arg1;
+	public int arg2;
+	
+	public Message(String methodName, int arg1, int arg2) 
+	{
+		this.methodName = methodName;
+		this.arg1 = arg1;
+		this.arg2 = arg2;
+	}
 	
 	@Override
     public int hashCode() {
@@ -19,16 +31,4 @@ public class Calc implements Serializable {
         return super.clone();
     }
     
-	public int add(String a, String b){
-		int x = Integer.parseInt(a);
-		int y = Integer.parseInt(b);
-		return x + y;
-	}
-	
-	public int mul(String a, String b){
-		int x = Integer.parseInt(a);
-		int y = Integer.parseInt(b);
-		return x * y;
-	}
-	
 }

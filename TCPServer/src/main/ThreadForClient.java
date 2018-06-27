@@ -25,38 +25,78 @@ public class ThreadForClient extends Thread
 	    	
 	    	switch(Integer.parseInt(choice)) 
     		{
-    		case(1):
-    			ObjectCollServer();
-    			break;    			
-    		default:
-    			System.out.println("Invalid choice");
-    			break;    		
+		    	case(0):
+		    		String_Handler();
+		    	break;
+	    		case(1):
+	    			Message_Handler();
+	    			break;    			
+	    		default:
+	    			System.out.println("Invalid choice");
+	    			break;    		
     		}		
 		}
     }
     
-    public void ObjectCollServer() 
+    public void String_Handler() 
+    {
+    	String rawString = streamManager.receiveString(); 
+    	String methodName = rawString.substring(0, 3);
+    	System.out.println("method : " + methodName);
+    	int arg1 = Integer.parseInt(rawString.substring(4,5));
+    	System.out.println("arg1 : "+ arg1);
+    	int arg2 = Integer.parseInt(rawString.substring(6,7));  	   	
+    	System.out.println("arg2 : "+ arg2);
+    	
+    	if(methodName.equals("ADD") ) 
+    	{
+    		streamManager.sendString( Integer.toString(arg1 + arg2));
+    	}
+    	else if(methodName.equals("MUL") ) 
+    	{
+    		streamManager.sendString( Integer.toString(arg1 * arg2));
+    	}
+    	else if(methodName.equals("SUB") ) 
+    	{
+    		streamManager.sendString( Integer.toString(arg1 - arg2));
+    	}else 
+    	{
+    		streamManager.sendString( "999");
+    	}  
+    }
+    
+    public void Message_Handler() 
     {
     	Object obj = streamManager.receiveObject();
-		String methodName = streamManager.receiveString(); 
-		String arg1 = streamManager.receiveString(); 
-		String arg2 = streamManager.receiveString(); 
-
-        Class<?> c = obj.getClass();
-        Class[] argTypes = new Class[] { String.class, String.class };
-        
-        Method method = null;
-        try {
-            method = c.getDeclaredMethod(methodName, argTypes);
-        } catch (NoSuchMethodException e) {
-            System.err.println("Method not found");
-            e.printStackTrace();
-        }
-        try {
-            assert method != null;
-            streamManager.sendString(method.invoke(obj, (Object)arg1, (Object)arg2).toString());
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
+    	Class<?> c = obj.getClass();
+    	
+    	try {   		
+			String methodName = (String) c.getField("methodName").get(obj);
+			System.out.println("method : " + methodName);
+			int arg1 = c.getField("arg1").getInt(obj);
+			System.out.println("arg1 : "+ arg1);	
+			int arg2 = c.getField("arg2").getInt(obj);    	   	
+	    	System.out.println("arg2 : "+ arg2);
+				    	
+	    	if(methodName.equals("ADD") ) 
+	    	{
+	    		streamManager.sendString( Integer.toString(arg1 + arg2));
+	    	}
+	    	else if(methodName.equals("MUL") ) 
+	    	{
+	    		streamManager.sendString( Integer.toString(arg1 * arg2));
+	    	}
+	    	else if(methodName.equals("SUB") ) 
+	    	{
+	    		streamManager.sendString( Integer.toString(arg1 - arg2));
+	    	}else 
+	    	{
+	    		streamManager.sendString( "999");
+	    	}  
+    	}catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) 
+    	{     	
+    		e.printStackTrace();
     	}
+      
     }
 }
